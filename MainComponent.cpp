@@ -23,9 +23,18 @@ public:
     MainContentComponent()
     {
 
-		addAndMakeVisible(ricardo);
-		addAndMakeVisible(mrsPolly);
-		addAndMakeVisible(logolas);
+		addAndMakeVisible(recorder);
+		addAndMakeVisible(playBack1);
+		addAndMakeVisible(playBack2);
+		addAndMakeVisible(playBack3);
+		addAndMakeVisible(logWindow);
+		addAndMakeVisible(logWindow2);
+		addAndMakeVisible(logWindow3);
+
+		//dummy buttons
+		addAndMakeVisible(featureExtractionButton);
+		addAndMakeVisible(trainNeuralNetworkButton);
+		addAndMakeVisible(activateFreePlayButton);
 
         setSize (1200, 1200);
         // specify the number of input and output channels that we want to open
@@ -79,23 +88,50 @@ public:
 
     void resized() override
     {
-        // This is called when the MainContentComponent is resized.
-        // If you add any child components, this is where you should
-        // update their positions.
-		//ricardo.setBounds(0, 0, getWidth(), getHeight());
-		ricardo.setBounds(getWidth()/4,0,600,600);
-		logolas.setBounds(getWidth() / 4, 400, 600, 600);
-		mrsPolly.setBounds(getWidth() / 4,400, 600, 600);
-    }
+		Rectangle<int> area(getLocalBounds());
+		Rectangle<int> sector1(area.removeFromLeft(getLocalBounds().getWidth()/3));
+		Rectangle<int> sector2(area.removeFromLeft(getLocalBounds().getWidth()/3));
+		Rectangle<int> sector3(area.removeFromLeft(getLocalBounds().getWidth()/3));
+
+		int buttonSize = area.getHeight() / 10;
+		int regItemSize = area.getHeight() / 5;
+		int logWindowSize = area.getHeight() / 3;
+
+		//sector 1
+		recorder.setBounds(sector1.removeFromTop(regItemSize));
+		logWindow.setBounds(sector1.removeFromTop(logWindowSize));
+		
+		//sector 2
+		featureExtractionButton.setBounds(sector2.removeFromTop(buttonSize));
+		logWindow2.setBounds(sector2.removeFromTop(logWindowSize));
+		trainNeuralNetworkButton.setBounds(sector2.removeFromTop(buttonSize));
+		logWindow3.setBounds(sector2.removeFromTop(logWindowSize));
+		
+		//sector 3
+		activateFreePlayButton.setBounds(sector3.removeFromTop(buttonSize));
+		playBack1.setBounds(sector3.removeFromTop(regItemSize));
+		playBack2.setBounds(sector3.removeFromTop(regItemSize));
+		playBack3.setBounds(sector3.removeFromTop(regItemSize));
+
+	}
 
 
 private:
     //==============================================================================
 
     // Your private member variables go here...
-	AudioRecorderComponent ricardo;
-	LogWindowComponent logolas;
-	AudioPlayBackComponent mrsPolly;
+	AudioRecorderComponent recorder;
+	LogWindowComponent logWindow;
+	LogWindowComponent logWindow2;
+	LogWindowComponent logWindow3;
+	AudioPlayBackComponent playBack1;
+	AudioPlayBackComponent playBack2;
+	AudioPlayBackComponent playBack3;
+	
+	//Dummy Buttons for Now - need to create them as components
+	TextButton featureExtractionButton;
+	TextButton trainNeuralNetworkButton;
+	TextButton activateFreePlayButton;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainContentComponent)
 };

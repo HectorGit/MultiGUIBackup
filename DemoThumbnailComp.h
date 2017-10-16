@@ -24,10 +24,10 @@ class DemoThumbnailComp : public Component,
 {
 public:
 	DemoThumbnailComp(AudioFormatManager& formatManager,
-		AudioTransportSource& transportSource_,
-		Slider& slider)
+		AudioTransportSource& transportSource_)//,
+		//Slider& slider)
 		: transportSource(transportSource_),
-		zoomSlider(slider),
+		//zoomSlider(slider),
 		scrollbar(false),
 		thumbnailCache(5),
 		thumbnail(512, formatManager, thumbnailCache),
@@ -156,7 +156,7 @@ public:
 				setRange(Range<double>(newStart, newStart + visibleRange.getLength()));
 
 			if (wheel.deltaY != 0.0f)
-				zoomSlider.setValue(zoomSlider.getValue() - wheel.deltaY);
+				//zoomSlider.setValue(zoomSlider.getValue() - wheel.deltaY);
 
 			repaint();
 		}
@@ -165,7 +165,7 @@ public:
 private:
 
 	AudioTransportSource& transportSource;
-	Slider& zoomSlider;
+	//Slider& zoomSlider;
 	ScrollBar scrollbar;
 
 	AudioThumbnailCache thumbnailCache;

@@ -23,7 +23,7 @@ class AudioPlayBackComponent    : public AudioAppComponent,
 
 	private FileBrowserListener,
 	private Button::Listener,
-	private Slider::Listener,
+	//private Slider::Listener,
 	private ChangeListener
 {
 public:
@@ -43,34 +43,34 @@ public:
 		//deviceManager.addAudioCallback(&recorder);
 		//end of adjustment
 
-		addAndMakeVisible(zoomLabel);
-		zoomLabel.setText("zoom:", dontSendNotification);
-		zoomLabel.setFont(Font(15.00f, Font::plain));
-		zoomLabel.setJustificationType(Justification::centredRight);
-		zoomLabel.setEditable(false, false, false);
-		zoomLabel.setColour(TextEditor::textColourId, Colours::black);
-		zoomLabel.setColour(TextEditor::backgroundColourId, Colour(0x00000000));
+		//addAndMakeVisible(zoomLabel);
+		//zoomLabel.setText("zoom:", dontSendNotification);
+		//zoomLabel.setFont(Font(15.00f, Font::plain));
+		//zoomLabel.setJustificationType(Justification::centredRight);
+		//zoomLabel.setEditable(false, false, false);
+		//zoomLabel.setColour(TextEditor::textColourId, Colours::black);
+		//zoomLabel.setColour(TextEditor::backgroundColourId, Colour(0x00000000));
 
-		addAndMakeVisible(followTransportButton);
-		followTransportButton.setButtonText("Follow Transport");
-		followTransportButton.addListener(this);
+		//addAndMakeVisible(followTransportButton);
+		//followTransportButton.setButtonText("Follow Transport");
+		//followTransportButton.addListener(this);
 
 		addAndMakeVisible(explanation);
-		explanation.setText("Select an audio file in the treeview above, and this page will display its waveform, and let you play it..", dontSendNotification);
-		explanation.setFont(Font(14.00f, Font::plain));
-		explanation.setJustificationType(Justification::bottomRight);
+		explanation.setText("Select Audio File", dontSendNotification);
+		explanation.setFont(Font(18.00f, Font::bold));
+		explanation.setJustificationType(Justification::centred);
 		explanation.setEditable(false, false, false);
 		explanation.setColour(TextEditor::textColourId, Colours::black);
 		explanation.setColour(TextEditor::backgroundColourId, Colour(0x00000000));
 
-		addAndMakeVisible(zoomSlider);
-		zoomSlider.setRange(0, 1, 0);
-		zoomSlider.setSliderStyle(Slider::LinearHorizontal);
-		zoomSlider.setTextBoxStyle(Slider::NoTextBox, false, 80, 20);
-		zoomSlider.addListener(this);
-		zoomSlider.setSkewFactor(2);
+		//addAndMakeVisible(zoomSlider);
+		//zoomSlider.setRange(0, 1, 0);
+		//zoomSlider.setSliderStyle(Slider::LinearHorizontal);
+		//zoomSlider.setTextBoxStyle(Slider::NoTextBox, false, 80, 20);
+		//zoomSlider.addListener(this);
+		//zoomSlider.setSkewFactor(2);
 
-		addAndMakeVisible(thumbnail = new DemoThumbnailComp(formatManager, transportSource, zoomSlider));
+		addAndMakeVisible(thumbnail = new DemoThumbnailComp(formatManager, transportSource));//, zoomSlider));
 		thumbnail->addChangeListener(this);
 
 		addAndMakeVisible(startStopButton);
@@ -96,7 +96,7 @@ public:
 		setOpaque(true);
 
 		//originally here
-		setSize(800, 600);
+		setSize(300, 600);
 		setAudioChannels(2, 2);
 
     }
@@ -109,8 +109,8 @@ public:
 		deviceManager.removeAudioCallback(&audioSourcePlayer);
 		fileTreeComp.removeListener(this);
 		thumbnail->removeChangeListener(this);
-		followTransportButton.removeListener(this);
-		zoomSlider.removeListener(this);
+		//followTransportButton.removeListener(this);
+		//zoomSlider.removeListener(this);
 		//originally here
 		//		deviceManager.removeAudioCallback(&recorder);
 		shutdownAudio();
@@ -159,20 +159,13 @@ public:
 	void resized() override
 	{
 		Rectangle<int> r(getLocalBounds().reduced(4));
+		Rectangle<int> usedArea1(r.removeFromTop(80));
+		Rectangle<int> usedArea2(r.removeFromTop(80));
 
-		Rectangle<int> controls(r.removeFromBottom(90));
-
-		explanation.setBounds(controls.removeFromRight(controls.getWidth() / 3));
-		Rectangle<int> zoom(controls.removeFromTop(25));
-		zoomLabel.setBounds(zoom.removeFromLeft(50));
-		zoomSlider.setBounds(zoom);
-		followTransportButton.setBounds(controls.removeFromTop(25));
-		startStopButton.setBounds(controls);
-
-		r.removeFromBottom(6);
-		thumbnail->setBounds(r.removeFromBottom(140));
-		r.removeFromBottom(6);
-		fileTreeComp.setBounds(r);
+		fileTreeComp.setBounds(usedArea1);
+		thumbnail->setBounds(usedArea2.removeFromLeft(r.getWidth() / 3).reduced(2));
+		startStopButton.setBounds(usedArea2.removeFromLeft(r.getWidth() / 3).reduced(2));
+		explanation.setBounds(usedArea2.removeFromLeft(r.getWidth() / 3).reduced(2));
 	}
 
 	//adjustment
@@ -212,9 +205,10 @@ private:
 	ScopedPointer<AudioFormatReaderSource> currentAudioFileSource;
 
 	ScopedPointer<DemoThumbnailComp> thumbnail;
-	Label zoomLabel, explanation;
-	Slider zoomSlider;
-	ToggleButton followTransportButton;
+	Label explanation;
+	//Label zoomLabel, explanation;
+	//Slider zoomSlider;
+	//ToggleButton followTransportButton;
 	TextButton startStopButton;
 	FileTreeComponent fileTreeComp;
 
@@ -224,7 +218,7 @@ private:
 	{
 		loadFileIntoTransport(file);
 
-		zoomSlider.setValue(0, dontSendNotification);
+		//zoomSlider.setValue(0, dontSendNotification);
 		thumbnail->setFile(file);
 	}
 
@@ -258,11 +252,11 @@ private:
 	void fileDoubleClicked(const File&) override {}
 	void browserRootChanged(const File&) override {}
 
-	void sliderValueChanged(Slider* sliderThatWasMoved) override
+	/*void sliderValueChanged(Slider* sliderThatWasMoved) override
 	{
 		if (sliderThatWasMoved == &zoomSlider)
 			thumbnail->setZoomFactor(zoomSlider.getValue());
-	}
+	}*/
 
 	void buttonClicked(Button* buttonThatWasClicked) override
 	{
@@ -278,10 +272,10 @@ private:
 				transportSource.start();
 			}
 		}
-		else if (buttonThatWasClicked == &followTransportButton)
+		/*else if (buttonThatWasClicked == &followTransportButton)
 		{
 			thumbnail->setFollowsTransport(followTransportButton.getToggleState());
-		}
+		}*/
 	}
 
 	void changeListenerCallback(ChangeBroadcaster* source) override

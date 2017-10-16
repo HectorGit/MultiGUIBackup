@@ -36,7 +36,7 @@ public:
 		setOpaque(true);
 
 		addAndMakeVisible(explanationLabel);
-		explanationLabel.setText("This page demonstrates how to record a wave file from the live audio input..\n\nPressing record will start recording a file in your \"Documents\" folder.", dontSendNotification);
+		explanationLabel.setText("Click RECORD to capture an example.", dontSendNotification);
 		explanationLabel.setFont(Font(15.00f, Font::plain));
 		explanationLabel.setJustificationType(Justification::topLeft);
 		explanationLabel.setEditable(false, false, false);
@@ -113,9 +113,10 @@ public:
 		// If you add any child components, this is where you should
 		// update their positions.
 		Rectangle<int> area(getLocalBounds());
-		recordingThumbnail.setBounds(area.removeFromTop(80).reduced(8)); //recordingThumbnail not recognized
-		recordButton.setBounds(area.removeFromTop(36).removeFromLeft(140).reduced(8));
-		explanationLabel.setBounds(area.reduced(8));
+		Rectangle<int> takenArea(area.removeFromTop(80));
+		recordButton.setBounds(takenArea.removeFromLeft(140).reduced(8));
+		recordingThumbnail.setBounds(takenArea.removeFromLeft(300).reduced(8)); //recordingThumbnail not recognized
+		explanationLabel.setBounds(takenArea.removeFromLeft(100).reduced(8));
 	}
 
 	void audioDeviceIOCallback(const float** /*inputChannelData*/, int /*numInputChannels*/,
