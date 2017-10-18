@@ -1,10 +1,12 @@
 #include "../JuceLibraryCode/JuceHeader.h"
+//#include ""
 //#include "RecordingThumbnail.h"
 //==============================================================================
 /** A simple class that acts as an AudioIODeviceCallback and writes the
 incoming audio data to a WAV file.
 */
-class AudioRecorder : public AudioIODeviceCallback
+class AudioRecorder : public AudioIODeviceCallback,
+	private Timer
 {
 public:
 	//AudioRecorder(juce::AudioThumbnail& thumbnailToUpdate);
@@ -28,7 +30,9 @@ public:
 	//void startRecording(const File& file);
 	void startRecording(const File& file)
 	{
+
 		stop();
+		startTimer(500);
 
 		if (sampleRate > 0)
 		{
@@ -57,7 +61,12 @@ public:
 					// And now, swap over our active writer pointer so that the audio callback will start using it..
 					const ScopedLock sl(writerLock);
 					activeWriter = threadedWriter;
+
 				}
+			}
+			if (getTimerInterval() > 2000) {
+				stop();
+				stopTimer();
 			}
 		}
 	}
@@ -130,5 +139,10 @@ private:
 
 	CriticalSection writerLock;
 	AudioFormatWriter::ThreadedWriter* volatile activeWriter;
+	
+	void timerCallback() override
+	{
+	}
+
 };
 

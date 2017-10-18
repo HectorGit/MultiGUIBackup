@@ -44,7 +44,7 @@ public:
 
 			//MainAppWindow::getSharedAudioDeviceManager().addChangeListener(this);
 
-			logMessage("Audio device diagnostics:\n");
+			//logMessage("Audio device diagnostics:\n");
 			dumpDeviceInfo();
 
 			setSize(400, 400);
@@ -106,10 +106,11 @@ public:
 		// If you add any child components, this is where you should
 		// update their positions.
 		Rectangle<int> r(getLocalBounds().reduced(4));
+		Rectangle<int> usedArea(r.removeFromTop(200).reduced(20));
 		//audioSetupComp->setBounds(r.removeFromTop(proportionOfHeight(0.65f)));
-		audioSetupComp.setBounds(r.removeFromTop(proportionOfHeight(0.65f)));//setBounds(r.removeFromTop(proportionOfHeight(0.65f)));
-
-		diagnosticsBox.setBounds(r);
+		//audioSetupComp.setBounds(r.removeFromTop(proportionOfHeight(0.20f)));//setBounds(r.removeFromTop(proportionOfHeight(0.65f)));
+		//audioSetupComp.setBounds(usedArea.removeFromTop(proportionOfHeight(0.60f)));//setBounds(r.removeFromTop(proportionOfHeight(0.65f)));
+		diagnosticsBox.setBounds(usedArea.removeFromTop(proportionOfHeight(0.90f)));
 	}
 
 	//void changeListenerCallback(Something &Source) override
@@ -121,14 +122,14 @@ public:
 	{
 		AudioDeviceManager& dm = audioDeviceManager;//MainAppWindow::getSharedAudioDeviceManager();
 
-		logMessage("--------------------------------------");
+		/*logMessage("--------------------------------------");
 		logMessage("Current audio device type: " + (dm.getCurrentDeviceTypeObject() != nullptr
 			? dm.getCurrentDeviceTypeObject()->getTypeName()
 			: "<none>"));
-
+		*/
 		if (AudioIODevice* device = dm.getCurrentAudioDevice())
 		{
-			logMessage("Current audio device: " + device->getName().quoted());
+			/*logMessage("Current audio device: " + device->getName().quoted());
 			logMessage("Sample rate: " + String(device->getCurrentSampleRate()) + " Hz");
 			logMessage("Block size: " + String(device->getCurrentBufferSizeSamples()) + " samples");
 			logMessage("Output Latency: " + String(device->getOutputLatencyInSamples()) + " samples");
@@ -138,10 +139,11 @@ public:
 			logMessage("Active input channels: " + getListOfActiveBits(device->getActiveInputChannels()));
 			logMessage("Output channel names: " + device->getOutputChannelNames().joinIntoString(", "));
 			logMessage("Active output channels: " + getListOfActiveBits(device->getActiveOutputChannels()));
+		*/
 		}
 		else
 		{
-			logMessage("No audio device open");
+			//logMessage("No audio device open");
 		}
 	}
 
@@ -149,6 +151,10 @@ public:
 	{
 		diagnosticsBox.moveCaretToEnd();
 		diagnosticsBox.insertTextAtCaret(m + newLine);
+	}
+
+	void clearMessages() {
+		diagnosticsBox.clear();
 	}
 
 	void audioDeviceIOCallback(const float** /*inputChannelData*/, int /*numInputChannels*/,

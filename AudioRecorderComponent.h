@@ -19,7 +19,8 @@
 */
 class AudioRecorderComponent    : public AudioAppComponent,
 	private AudioIODeviceCallback,
-	private Button::Listener
+	private Button::Listener,
+	private Timer
 {
 public:
     AudioRecorderComponent() : audioSetupComp(audioDeviceManager, 0, 0, 0, 256,
@@ -27,6 +28,8 @@ public:
 		true, true, false), //deviceManager.getSharedAudioDeviceManager(),
 		recorder(recordingThumbnail.getAudioThumbnail())
     {
+		//class_being_recorded = 0;
+		message = "Recordings haven't started yet";
         // In your constructor, you should add any child components, and
         // initialise any special settings that your component needs.
 		audioDeviceManager.initialise(0, 2, nullptr, true, String(), nullptr);
@@ -137,26 +140,48 @@ public:
 	}
 	// Your private member variables go here...
 
+	//int class_being_recorded;
+
+	/*String returnMessage() {
+		return message;
+	}*/
+	
+
+	AudioRecorder* getAudioRecorder() {
+		return &recorder;
+	}
+
+	TextButton* getButton() {
+		return &recordButton;
+	}
+
 private:
 
 	//==============================================================================
+	TextButton recordButton;
+
 	AudioDeviceManager audioDeviceManager;         // [3]
 	AudioDeviceSelectorComponent audioSetupComp;   // [4]
 
+	String message;
 												   //AudioDeviceManager& deviceManager;
 	RecordingThumbnail recordingThumbnail;
 	AudioRecorder recorder;
 	Label explanationLabel;
-	TextButton recordButton;
 
 	void startRecording()
 	{
+		startTimer(500);
 		const File file(File::getSpecialLocation(File::userDocumentsDirectory)
 			.getNonexistentChildFile("Juce Demo Audio Recording", ".wav"));
 		recorder.startRecording(file);
 
 		recordButton.setButtonText("Stop");
 		recordingThumbnail.setDisplayFullThumbnail(false);
+		if (getTimerInterval() > 2000) {
+			stopRecording();
+			stopTimer();
+		}
 	}
 
 	void stopRecording()
@@ -165,7 +190,7 @@ private:
 		recordButton.setButtonText("Record");
 		recordingThumbnail.setDisplayFullThumbnail(true);
 	}
-
+	
 	void buttonClicked(Button* button) override
 	{
 		if (button == &recordButton)
@@ -173,8 +198,27 @@ private:
 			if (recorder.isRecording())
 				stopRecording();
 			else
+				/*if (class_being_recorded==1) {
+					message = "Class 1 being recorded";
+				}else if (class_being_recorded == 2) {
+					message = "Class 2 being recorded";
+				}else{
+					message = "Class 3 being recorded.";
+				}*/
+				//startTimer()
 				startRecording();
 		}
+	}
+
+	/*void timerCallBack()
+	{
+		repaint();
+	}*/
+
+	void timerCallback() override
+	{
+
+		repaint();
 	}
 
 
